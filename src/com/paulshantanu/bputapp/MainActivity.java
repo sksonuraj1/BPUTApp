@@ -238,7 +238,8 @@ public class MainActivity extends ActionBarActivity implements OnRefreshListener
 					}
 				});
    			    mSwipeRefreshLayout.setRefreshing(false);
-                progressBar.setVisibility(View.INVISIBLE);   			 
+                progressBar.setVisibility(View.INVISIBLE);
+         	    mSwipeRefreshLayout.setColorScheme(R.color.holo_blue_light,android.R.color.transparent,android.R.color.transparent,android.R.color.transparent);
 		        getSupportActionBar().setTitle("BPUT App");
 		        showDropdown(); //show dropdown spinner method call
 		}	 
