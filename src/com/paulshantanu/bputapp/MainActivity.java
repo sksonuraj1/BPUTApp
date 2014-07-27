@@ -86,7 +86,7 @@ public class MainActivity extends ActionBarActivity implements OnRefreshListener
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				
+				progressBar.setVisibility(View.INVISIBLE);
 			}
 		});
     	

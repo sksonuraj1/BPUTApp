@@ -62,7 +62,7 @@ public class NoticeAcitivity extends ActionBarActivity {
 		}
 		else
 		{
-			Log.i("link","substr: "+ url.substring(0, 4));
+			//Log.i("link","substr: "+ url.substring(0, 4));
 			str.append("http://www.bput.ac.in/");
 		    str.append(url);
 		    link = str.toString();
@@ -74,6 +74,7 @@ public class NoticeAcitivity extends ActionBarActivity {
 			Log.i("debug", "PDF link found");
 			Intent pdfintent = new Intent(NoticeAcitivity.this,PdfViewerAcitvity.class);
 			pdfintent.putExtra("link", link);
+			Log.i("link", link);
 			startActivity(pdfintent);
 		}
 		else //else again parse the notice html and display it.

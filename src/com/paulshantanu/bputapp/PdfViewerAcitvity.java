@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.ViewGroup.LayoutParams;
@@ -36,7 +37,8 @@ public class PdfViewerAcitvity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_pdf_notice);
 		
-		String pdfIntent = getIntent().getExtras().getString("link");
+		String link = getIntent().getExtras().getString("link");
+		Log.i("link", link);
 		
 		progressBar = new ButteryProgressBar(this);
 		progressBar.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 24));
@@ -68,7 +70,7 @@ public class PdfViewerAcitvity extends ActionBarActivity {
 		settings.setBuiltInZoomControls(true);
 		webView.setWebChromeClient(new WebChromeClient());
 	
-		 new DownloadTask(PdfViewerAcitvity.this).execute("http://pauldmps.url.ph/test.pdf");
+		 new DownloadTask(PdfViewerAcitvity.this).execute(link);
 		
 	}
 
