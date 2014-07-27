@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/LinearLayout1"
     android:layout_width="match_parent"
@@ -7,22 +7,38 @@
     tools:context=".MainActivity" >
 
     
+    <com.paulshantanu.bputapp.SwipeRefreshHintLayout
+        android:id="@+id/swipe_hint"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+        
+        
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Swipe Down To Refresh"/>
+
+        <!-- Any other view positioned using RelativeLayout rules -->
+
+    </com.paulshantanu.bputapp.SwipeRefreshHintLayout>
+    
+    
     <android.support.v4.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/swipe_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     
-        
         <ListView
             android:id="@+id/lv_notices_main"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="fill">
+            android:layout_gravity="fill" >
+
         </ListView>
         
     </android.support.v4.widget.SwipeRefreshLayout>
         
-        
-
-</LinearLayout>
+</RelativeLayout>

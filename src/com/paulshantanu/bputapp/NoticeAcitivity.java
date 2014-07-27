@@ -20,6 +20,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -61,18 +62,29 @@ public class NoticeAcitivity extends ActionBarActivity {
 		}
 		else
 		{
-			Log.i("link","substr: "+ url.substring(0, 4));
+			//Log.i("link","substr: "+ url.substring(0, 4));
 			str.append("http://www.bput.ac.in/");
 		    str.append(url);
 		    link = str.toString();
 		}
 	    Log.i("debug","url1: "+link); 		
 
-		
+		if(link.endsWith("pdf")) //If the notice is PDF, start PDF opening activity.
+		{
+			Log.i("debug", "PDF link found");
+			Intent pdfintent = new Intent(NoticeAcitivity.this,PdfViewerAcitvity.class);
+			pdfintent.putExtra("link", link);
+			Log.i("link", link);
+			startActivity(pdfintent);
+		}
+		else //else again parse the notice html and display it.
+		{
 		//add data to send to server by POST
 		nameValuePairs.add(new BasicNameValuePair("url", link)); 
 		new PostToServer().execute();
+		}
 	}
+		
 	
 	
 	    // XML Parser Class

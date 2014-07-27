@@ -15,6 +15,10 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import com.paulshantanu.bputapp.ButteryProgressBar;
+import com.paulshantanu.bputapp.R;
+import com.paulshantanu.bputapp.SwipeRefreshHintLayout;
+
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -31,9 +35,13 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.ViewGroup.LayoutParams;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 
 public class MainActivity extends ActionBarActivity implements OnRefreshListener {
@@ -41,21 +49,30 @@ public class MainActivity extends ActionBarActivity implements OnRefreshListener
 	String[] pages = {"Notices", "Results", "Calender", "Holidays", "Syllabus"};
 	SaxParserHandler handler;
 	ListView lv;
-	SwipeRefreshLayout swipeLayout;
-	
+	SwipeRefreshLayout mSwipeRefreshLayout;
+	SwipeRefreshHintLayout mSwipeRefreshHintLayout;
+    ButteryProgressBar progressBar;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main); 
+		
+		progressBar = ButteryProgressBar.getInstance(MainActivity.this);
+	
+		mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swipe_container);
+ 	    mSwipeRefreshHintLayout = (SwipeRefreshHintLayout)findViewById(R.id.swipe_hint);
+ 	    mSwipeRefreshHintLayout.setSwipeLayoutTarget(mSwipeRefreshLayout);
+ 	    mSwipeRefreshLayout.setOnRefreshListener(this);
+ 	    mSwipeRefreshLayout.setColorScheme(R.color.holo_blue_light,android.R.color.transparent,android.R.color.transparent,android.R.color.transparent);
+
+		
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 	    // test for internet connection
 	    if (cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isAvailable() && cm.getActiveNetworkInfo().isConnected()) 
 	    
 	    {
-		swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
-        swipeLayout.setOnRefreshListener(this);
-		
-        swipeLayout.setColorScheme( android.R.color.transparent,android.R.color.transparent, android.R.color.transparent, R.color.holo_red_light);
+	    	
         onRefresh(); //call the refresh method to load the listview
        
 	    }
@@ -68,19 +85,38 @@ public class MainActivity extends ActionBarActivity implements OnRefreshListener
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				
+				progressBar.setVisibility(View.INVISIBLE);
 			}
 		});
     	
     	b.create().show();
     }
 	    
-    	
+	   
+		/*
+		final FrameLayout decorView = (FrameLayout) MainActivity.this.getWindow().getDecorView();
+		decorView.addView(progressBar);
+        final View contentView = decorView.findViewById(android.R.id.content);
+
+		ViewTreeObserver observer = progressBar.getViewTreeObserver();
+		observer.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+		    @Override
+		    public void onGlobalLayout() {
+		        progressBar.setY(contentView.getY());
+		        ViewTreeObserver observer = progressBar.getViewTreeObserver();
+		        observer.removeGlobalOnLayoutListener(this);
+		    }
+		}); */
+		
+	    
+	    
     }
 
 	@Override
 	public void onRefresh() {
-		swipeLayout.setRefreshing(true);
+        progressBar.setVisibility(View.VISIBLE);
+		mSwipeRefreshLayout.setRefreshing(true);
+ 	    mSwipeRefreshLayout.setColorScheme(R.color.transparent,android.R.color.transparent,android.R.color.transparent,android.R.color.transparent);
         getSupportActionBar().setIcon(android.R.color.transparent);
 		getSupportActionBar().setTitle("Refreshing...");
     	new PostToServer().execute(); //execute XML parsing
@@ -200,8 +236,9 @@ public class MainActivity extends ActionBarActivity implements OnRefreshListener
 						
 					}
 				});
-   			 
-		        swipeLayout.setRefreshing(false);
+   			    mSwipeRefreshLayout.setRefreshing(false);
+                progressBar.setVisibility(View.INVISIBLE);
+         	    mSwipeRefreshLayout.setColorScheme(R.color.holo_blue_light,android.R.color.transparent,android.R.color.transparent,android.R.color.transparent);
 		        getSupportActionBar().setTitle("BPUT App");
 		        showDropdown(); //show dropdown spinner method call
 		}	 
