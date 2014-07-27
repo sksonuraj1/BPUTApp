@@ -58,7 +58,8 @@ public class MainActivity extends ActionBarActivity implements OnRefreshListener
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main); 
 		
-		progressBar = ButteryProgressBar.getInstance(MainActivity.this);
+	    progressBar = new ButteryProgressBar(this);
+		progressBar.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 24));
 	
 		mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swipe_container);
  	    mSwipeRefreshHintLayout = (SwipeRefreshHintLayout)findViewById(R.id.swipe_hint);
@@ -93,8 +94,8 @@ public class MainActivity extends ActionBarActivity implements OnRefreshListener
     }
 	    
 	   
-		/*
-		final FrameLayout decorView = (FrameLayout) MainActivity.this.getWindow().getDecorView();
+		
+		final FrameLayout decorView = (FrameLayout) getWindow().getDecorView();
 		decorView.addView(progressBar);
         final View contentView = decorView.findViewById(android.R.id.content);
 
@@ -106,7 +107,7 @@ public class MainActivity extends ActionBarActivity implements OnRefreshListener
 		        ViewTreeObserver observer = progressBar.getViewTreeObserver();
 		        observer.removeGlobalOnLayoutListener(this);
 		    }
-		}); */
+		});
 		
 	    
 	    

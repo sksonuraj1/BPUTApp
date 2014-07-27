@@ -1,24 +1,18 @@
 package com.paulshantanu.bputapp;
 /**
- * This file is part of Android 4.4 Kitkat's default e-mail application. 
- * Copyright Android Open Source Project. Licensed under APACHE V2 license.
+ * Below class is copied from android Kit-Kat project source code
  * URL:-https://android.googlesource.com/platform/packages/apps/UnifiedEmail/+/kitkat-release/src/com/android/mail/ui/ButteryProgressBar.java
- * Source is provided without any guarantee or warranty. 
+ * Source is provided without any guarantee or warranty 
  */
 
 import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.view.ViewGroup.LayoutParams;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.animation.Interpolator;
-import android.widget.FrameLayout;
 /**
  * Procedurally-drawn version of a horizontal indeterminate progress bar. Draws faster and more
  * frequently (by making use of the animation timer), requires minimal memory overhead, and allows
@@ -66,11 +60,11 @@ public class ButteryProgressBar extends View {
 	private static final int DEFAULT_BAR_HEIGHT_DP = 4;
 	private static final int DEFAULT_DETENT_WIDTH_DP = 4;
 
-	private ButteryProgressBar(Context c) {
+	public ButteryProgressBar(Context c) {
 		this(c, null);
 	}
 
-	private ButteryProgressBar(Context c, AttributeSet attrs) {
+	public ButteryProgressBar(Context c, AttributeSet attrs) {
 		super(c, attrs);
 
 		mDensity = c.getResources().getDisplayMetrics().density;
@@ -181,29 +175,5 @@ public class ButteryProgressBar extends View {
 		}
 
 	}
-	
-	public static ButteryProgressBar getInstance(Context context){
-		final ButteryProgressBar obj = new ButteryProgressBar(context);
-        obj.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 24));
-
-		final FrameLayout decorView = (FrameLayout) ((Activity) context).getWindow().getDecorView();
-		decorView.addView(obj);
-        final View contentView = decorView.findViewById(android.R.id.content);
-
-		ViewTreeObserver observer = obj.getViewTreeObserver();
-		observer.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
-		    @Override
-		    public void onGlobalLayout() {
-		        obj.setY(contentView.getY());
-		        ViewTreeObserver observer = obj.getViewTreeObserver();
-		        observer.removeGlobalOnLayoutListener(this);
-		    }
-		});
-		
-		
-		return obj;
-		
-	}
-	
 
 }

@@ -40,9 +40,8 @@ public class PdfViewerAcitvity extends ActionBarActivity {
 		String link = getIntent().getExtras().getString("link");
 		Log.i("link", link);
 		
-	    progressBar = ButteryProgressBar.getInstance(PdfViewerAcitvity.this);
-
-	/*	progressBar.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 24));
+		progressBar = new ButteryProgressBar(this);
+		progressBar.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 24));
 	
 		final FrameLayout decorView = (FrameLayout) getWindow().getDecorView();
 		decorView.addView(progressBar);
@@ -56,7 +55,7 @@ public class PdfViewerAcitvity extends ActionBarActivity {
 		        ViewTreeObserver observer = progressBar.getViewTreeObserver();
 		        observer.removeGlobalOnLayoutListener(this);
 		    }
-		}); */
+		});
 		
 		webView = (WebView) findViewById(R.id.notice_view);
 		webView.setVisibility(View.INVISIBLE);
