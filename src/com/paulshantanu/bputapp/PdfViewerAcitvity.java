@@ -2,12 +2,12 @@ package com.paulshantanu.bputapp;
 
 
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
@@ -18,67 +18,59 @@ import android.os.PowerManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.view.ViewGroup.LayoutParams;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 @SuppressLint("NewApi")
 public class PdfViewerAcitvity extends ActionBarActivity {
 	private WebView webView;
     ButteryProgressBar progressBar;
-	
+    StringBuffer str = new StringBuffer();
+	String url;
+	Uri path;
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_pdf_notice);
 		
 		String link = getIntent().getExtras().getString("link");
-		Log.i("link", link);
+		Log.i("debug", "pdfintent: "+link);
+		
+		//check & convert relative urls to abosulte
+				if (link.substring(0, 4).equals("http")){
+						url = link;
+				}
+				else{
+					str.append("http://www.bput.ac.in/");
+				    str.append(link); 
+					url = str.toString();
+				}
+				
+	    url = url.replaceAll(" ", "%20"); //Replace spaces with "%20" in the URL
 		
 	    progressBar = ButteryProgressBar.getInstance(PdfViewerAcitvity.this);
-
-	/*	progressBar.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 24));
-	
-		final FrameLayout decorView = (FrameLayout) getWindow().getDecorView();
-		decorView.addView(progressBar);
-        final View contentView = decorView.findViewById(android.R.id.content);
-
-		ViewTreeObserver observer = progressBar.getViewTreeObserver();
-		observer.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
-		    @Override
-		    public void onGlobalLayout() {
-		        progressBar.setY(contentView.getY());
-		        ViewTreeObserver observer = progressBar.getViewTreeObserver();
-		        observer.removeGlobalOnLayoutListener(this);
-		    }
-		}); */
+        progressBar.setVisibility(View.VISIBLE);
 		
 		webView = (WebView) findViewById(R.id.notice_view);
 		webView.setVisibility(View.INVISIBLE);
 		WebSettings settings = webView.getSettings();
 		settings.setJavaScriptEnabled(true);
 
-		if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.JELLY_BEAN) //required for running javascript on android 4.1 or later
-		{
+		if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.JELLY_BEAN){ //required for running javascript on android 4.1 or later
 		settings.setAllowFileAccessFromFileURLs(true);
 		settings.setAllowUniversalAccessFromFileURLs(true);
 		}
 		settings.setBuiltInZoomControls(true);
 		webView.setWebChromeClient(new WebChromeClient());
 	
-		 new DownloadTask(PdfViewerAcitvity.this).execute(link);
-		
+	    new DownloadTask(PdfViewerAcitvity.this).execute(url);
 	}
 
 		
-	private class DownloadTask extends AsyncTask<String, Integer, String>
-	{
-		
+	private class DownloadTask extends AsyncTask<String, Integer, String>{	
 		private Context context;
 	    private PowerManager.WakeLock mWakeLock;
 
@@ -98,8 +90,7 @@ public class PdfViewerAcitvity extends ActionBarActivity {
 		}
 
 		@Override
-		protected String doInBackground(String... sUrl) {
-            
+		protected String doInBackground(String... sUrl) {       
 			InputStream input = null;
 	        OutputStream output = null;
 	        HttpURLConnection connection = null;
@@ -114,10 +105,8 @@ public class PdfViewerAcitvity extends ActionBarActivity {
 	            }
 	            
 	            int fileLength = connection.getContentLength();
-
 	            input = connection.getInputStream();
 	            output = openFileOutput("notice.pdf", Context.MODE_PRIVATE);
-
 	            byte data[] = new byte[4096];
 	            long total = 0;
 	            int count;
@@ -134,23 +123,19 @@ public class PdfViewerAcitvity extends ActionBarActivity {
 	                output.write(data, 0, count);
 	                }
 	        }
-			catch(Exception e)
-			{
+			catch(Exception e){
 				e.printStackTrace();
 			}
-	        finally
-	        {
+	        finally {
 	        	try {
 	                if (output != null)
 	                    output.close();
 	                if (input != null)
 	                    input.close();
 	            } catch (IOException ignored) {}
-
 	            if (connection != null)
 	                connection.disconnect();
 	        }
-			
 			return null;
 		}
 		
@@ -158,7 +143,6 @@ public class PdfViewerAcitvity extends ActionBarActivity {
 		protected void onProgressUpdate(Integer... progress) {
 			super.onProgressUpdate(progress);
 			getSupportActionBar().setTitle("Loading " + progress[0] + "%");
-	        
 		}
 		
 		@Override
@@ -170,14 +154,33 @@ public class PdfViewerAcitvity extends ActionBarActivity {
 	        else
 	            Toast.makeText(context,"File downloaded", Toast.LENGTH_SHORT).show();
 			
-			Uri path = Uri.parse(context.getFilesDir().toString()+ "/notice.pdf");
+			path = Uri.parse(context.getFilesDir().toString()+ "/notice.pdf");
 	        webView.loadUrl("file:///android_asset/pdfviewer/index.html?file=" + path);
 	        webView.setVisibility(View.VISIBLE);
 			progressBar.setVisibility(View.INVISIBLE);
-			getSupportActionBar().setTitle("View Notice");
+			getSupportActionBar().setTitle("View Notice");		
 		}
-		
 	}
+	
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		webView.loadUrl( "javascript:window.location.reload( true )" );
 	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		webView.clearCache(true);
+	}
+	
+	protected void  onDestroy() {
+		super.onDestroy();
+		webView.clearCache(true);
+		File file = new File(getFilesDir(), "notice.pdf");
+        file.delete();			
+	}	
+}
 	
 

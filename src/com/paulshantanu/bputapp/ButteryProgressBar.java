@@ -33,18 +33,13 @@ import android.widget.FrameLayout;
  * use the given height as the bar's shadow height.)
  */
 public class ButteryProgressBar extends View {
-
 	private final GradientDrawable mShadow;
 	private final ValueAnimator mAnimator;
-
 	private final Paint mPaint = new Paint();
-
 	private final int mBarColor;
 	private final int mSolidBarHeight;
 	private final int mSolidBarDetentWidth;
-
 	private final float mDensity;
-
 	private int mSegmentCount;
 
 	/**
@@ -198,12 +193,7 @@ public class ButteryProgressBar extends View {
 		        ViewTreeObserver observer = obj.getViewTreeObserver();
 		        observer.removeGlobalOnLayoutListener(this);
 		    }
-		});
-		
-		
+		});	
 		return obj;
-		
 	}
-	
-
 }

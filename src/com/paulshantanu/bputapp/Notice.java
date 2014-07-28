@@ -36,7 +36,6 @@ public class Notice {
 		this.table_body.add(table_body);
 	}
 	public String getNotice_body() {
-		
 		return notice_body.toString().replaceAll("<br>", "\n");
 	}
 	public void setNotice_body(String notice_body) {

@@ -36,19 +36,13 @@ public class SwipeRefreshHintLayout extends RelativeLayout {
 			@Override
             public boolean onPreDraw() {
                 newBounds.set(swipeTarget.getLeft(), swipeRefreshLayout.getTop(), swipeTarget.getRight(), swipeTarget.getTop());
-                
-
                 if (!oldBounds.equals(newBounds)){
                     getLayoutParams().height = newBounds.height();
                     requestLayout();
-                    oldBounds.set(newBounds);
-                    
-                    
+                    oldBounds.set(newBounds);     
                 }
                 return true;
             }
         });
-
-       
 }
 }
