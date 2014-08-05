@@ -21,9 +21,9 @@
 
             <TextView
                 android:id="@+id/notice_text"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                android:text="" />
 
             <HorizontalScrollView
                 android:id="@+id/HorizontalScrollView1"

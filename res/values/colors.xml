@@ -59,6 +59,7 @@
     <color name="link_text_dark">#5c5cff</color>
     <color name="link_text_light">#0000ee</color>
     <color name="suggestion_highlight_text">#177bbd</color>
+    <color name="theme_red">#d43d1e</color>
 
   
     <!-- For date picker widget -->
