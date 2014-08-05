@@ -1,14 +1,20 @@
 package com.paulshantanu.bputapp;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v4.app.NavUtils;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-public class NoticeAcitivity extends ActionBarActivity implements AsyncTaskListener{
+public class NoticeAcitivity extends Activity implements AsyncTaskListener{
 
 	ButteryProgressBar progressBar;
 	SaxParserHandler notice_handler;
@@ -22,6 +28,9 @@ public class NoticeAcitivity extends ActionBarActivity implements AsyncTaskListe
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_notice);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setSubtitle("View Notice");
+
 		main_tv = (TextView) findViewById(R.id.notice_text);
 		tl = (TableLayout) findViewById(R.id.notice_table);
 		progressBar = ButteryProgressBar.getInstance(NoticeAcitivity.this);
@@ -41,6 +50,8 @@ public class NoticeAcitivity extends ActionBarActivity implements AsyncTaskListe
 
 		new XMLParser(this, notice_handler,url).execute("http://pauldmps.url.ph/notice.php");
 	}
+	
+	
 		
 	 public void onTaskComplete(String result) {
 		 if(result.equals("OK")){
@@ -91,4 +102,46 @@ public class NoticeAcitivity extends ActionBarActivity implements AsyncTaskListe
                 tl.addView(tr, new TableLayout.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
     		}		
 	}
+
+	@Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	super.onCreateOptionsMenu(menu);
+    	MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+        return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+    	switch (item.getItemId()) {
+		case R.id.action_settings:		
+				
+			return true;
+			
+		case R.id.about:	
+             AlertDialog.Builder b = new AlertDialog.Builder(this);
+             b.setTitle("About");
+             
+             WebView about_view = new WebView(this);
+             about_view.loadUrl("file:///android_asset/about.htm");
+             
+            // b.setMessage(Html.fromHtml(getResources().getString(R.string.about_string)));
+             b.setView(about_view);
+             b.setPositiveButton("OK", null);
+             b.create().show();
+			return true;
+			
+		case android.R.id.home:
+			 NavUtils.navigateUpFromSameTask(this);
+		        return true;
+
+		default:
+	    	return super.onOptionsItemSelected(item);
+		}
+    }
 }
+
+
+
+

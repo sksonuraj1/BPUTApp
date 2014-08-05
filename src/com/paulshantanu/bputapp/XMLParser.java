@@ -29,7 +29,7 @@ interface AsyncTaskListener{
     public void onTaskComplete(String result);
 } 
 
-public class XMLParser extends AsyncTask<String, Void, String> {
+public class XMLParser extends AsyncTask<String, Integer, String> {
 	private Context context;
 	private AsyncTaskListener callback;
 	private SaxParserHandler handler;
@@ -82,6 +82,12 @@ public class XMLParser extends AsyncTask<String, Void, String> {
             e.printStackTrace();
 		}
 	  return "Error";
+	}
+	
+	@Override
+	protected void onProgressUpdate(Integer... progress) {
+		super.onProgressUpdate(progress);
+		((Activity)context).getActionBar().setSubtitle("Loading " + progress[0] + "%");
 	}
 
 	@Override

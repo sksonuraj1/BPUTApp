@@ -9,14 +9,19 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v4.app.NavUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -24,7 +29,7 @@ import android.webkit.WebView;
 import android.widget.Toast;
 
 @SuppressLint("NewApi")
-public class PdfViewerAcitvity extends ActionBarActivity {
+public class PdfViewerAcitvity extends Activity {
 	private WebView webView;
     ButteryProgressBar progressBar;
     StringBuffer str = new StringBuffer();
@@ -35,6 +40,8 @@ public class PdfViewerAcitvity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_pdf_notice);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setSubtitle("View Notice");
 		
 		String link = getIntent().getExtras().getString("link");
 		Log.i("debug", "pdfintent: "+link);
@@ -66,7 +73,7 @@ public class PdfViewerAcitvity extends ActionBarActivity {
 		settings.setBuiltInZoomControls(true);
 		webView.setWebChromeClient(new WebChromeClient());
 	
-	    new DownloadTask(PdfViewerAcitvity.this).execute(url);
+	    new DownloadTask(PdfViewerAcitvity.this).execute("http://pauldmps.url.ph/test.pdf");
 	}
 
 		
@@ -142,7 +149,7 @@ public class PdfViewerAcitvity extends ActionBarActivity {
 		@Override
 		protected void onProgressUpdate(Integer... progress) {
 			super.onProgressUpdate(progress);
-			getSupportActionBar().setTitle("Loading " + progress[0] + "%");
+			getActionBar().setSubtitle("Loading " + progress[0] + "%");
 		}
 		
 		@Override
@@ -158,7 +165,7 @@ public class PdfViewerAcitvity extends ActionBarActivity {
 	        webView.loadUrl("file:///android_asset/pdfviewer/index.html?file=" + path);
 	        webView.setVisibility(View.VISIBLE);
 			progressBar.setVisibility(View.INVISIBLE);
-			getSupportActionBar().setTitle("View Notice");		
+			getActionBar().setSubtitle("View Notice");		
 		}
 	}
 	
@@ -181,6 +188,46 @@ public class PdfViewerAcitvity extends ActionBarActivity {
 		File file = new File(getFilesDir(), "notice.pdf");
         file.delete();			
 	}	
+
+	@Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	super.onCreateOptionsMenu(menu);
+    	MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+        return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+    	switch (item.getItemId()) {
+		case R.id.action_settings:		
+				
+			return true;
+			
+		case R.id.about:	
+             AlertDialog.Builder b = new AlertDialog.Builder(this);
+             b.setTitle("About");
+             
+             WebView about_view = new WebView(this);
+             about_view.loadUrl("file:///android_asset/about.htm");
+             
+             b.setView(about_view);
+             b.setPositiveButton("OK", null);
+             b.create().show();
+			return true;
+			
+		case android.R.id.home:
+			 NavUtils.navigateUpFromSameTask(this);
+		        return true;
+
+		default:
+	    	return super.onOptionsItemSelected(item);
+		}
+    }
+
 }
+
+
 	
 

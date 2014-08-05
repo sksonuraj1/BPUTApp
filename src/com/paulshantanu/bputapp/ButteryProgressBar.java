@@ -71,7 +71,7 @@ public class ButteryProgressBar extends View {
 		mDensity = c.getResources().getDisplayMetrics().density;
 
 		
-	        mBarColor = c.getResources().getColor(android.R.color.holo_blue_light);
+	        mBarColor = c.getResources().getColor(R.color.theme_red);
 			mSolidBarHeight = Math.round(DEFAULT_BAR_HEIGHT_DP * mDensity);
 			mSolidBarDetentWidth = Math.round(DEFAULT_DETENT_WIDTH_DP * mDensity);
 
@@ -189,7 +189,7 @@ public class ButteryProgressBar extends View {
 		observer.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
 		    @Override
 		    public void onGlobalLayout() {
-		        obj.setY(contentView.getY());
+		        obj.setY(contentView.getY()+ 1);
 		        ViewTreeObserver observer = obj.getViewTreeObserver();
 		        observer.removeGlobalOnLayoutListener(this);
 		    }

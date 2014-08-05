@@ -1,6 +1,8 @@
 package com.paulshantanu.bputapp;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,15 +10,19 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
-import android.support.v7.app.ActionBarActivity;
+import android.text.Html;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class MainActivity extends ActionBarActivity implements OnRefreshListener,AsyncTaskListener {
+public class MainActivity extends Activity implements OnRefreshListener,AsyncTaskListener {
 
 	SaxParserHandler handler;
 	ListView lv;
@@ -29,7 +35,7 @@ public class MainActivity extends ActionBarActivity implements OnRefreshListener
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main); 		
 		progressBar = ButteryProgressBar.getInstance(MainActivity.this);
-		getSupportActionBar().setIcon(getResources().getDrawable(R.drawable.ic_launcher));    
+		getActionBar().setIcon(getResources().getDrawable(R.drawable.ic_launcher));    
 		
 		checkConnectivity();
 	
@@ -37,7 +43,7 @@ public class MainActivity extends ActionBarActivity implements OnRefreshListener
  	    mSwipeRefreshHintLayout = (SwipeRefreshHintLayout)findViewById(R.id.swipe_hint);
  	    mSwipeRefreshHintLayout.setSwipeLayoutTarget(mSwipeRefreshLayout);
  	    mSwipeRefreshLayout.setOnRefreshListener(this);
- 	    mSwipeRefreshLayout.setColorScheme(R.color.holo_blue_light,android.R.color.transparent,android.R.color.transparent,android.R.color.transparent);
+ 	    mSwipeRefreshLayout.setColorScheme(R.color.theme_red,android.R.color.transparent,android.R.color.transparent,android.R.color.transparent);
         onRefresh();
     }
 
@@ -46,7 +52,7 @@ public class MainActivity extends ActionBarActivity implements OnRefreshListener
         progressBar.setVisibility(View.VISIBLE);
 		mSwipeRefreshLayout.setRefreshing(true);
  	    mSwipeRefreshLayout.setColorScheme(R.color.transparent,R.color.transparent,R.color.transparent,R.color.transparent);
-		getSupportActionBar().setTitle("Refreshing...");
+		getActionBar().setTitle("Refreshing...");
 		handler = new SaxParserHandler();
 
 		new XMLParser(this, handler,null).execute("http://pauldmps.url.ph/default.php");
@@ -106,9 +112,43 @@ public class MainActivity extends ActionBarActivity implements OnRefreshListener
 				});
    			    mSwipeRefreshLayout.setRefreshing(false);
                 progressBar.setVisibility(View.INVISIBLE);
-         	    mSwipeRefreshLayout.setColorScheme(R.color.holo_blue_light,R.color.transparent,R.color.transparent,R.color.transparent);
-		        getSupportActionBar().setTitle("BPUT App");
+         	    mSwipeRefreshLayout.setColorScheme(R.color.theme_red,R.color.transparent,R.color.transparent,R.color.transparent);
+		        getActionBar().setTitle("BPUT App");
 	    	}
+	    }
+	    
+	    @Override
+	    public boolean onCreateOptionsMenu(Menu menu) {
+	    	super.onCreateOptionsMenu(menu);
+	    	MenuInflater inflater = getMenuInflater();
+	        inflater.inflate(R.menu.main, menu);
+	        return true;
+	    }
+	    
+	    @Override
+	    public boolean onOptionsItemSelected(MenuItem item) {
+
+	    	switch (item.getItemId()) {
+			case R.id.action_settings:		
+					
+				return true;
+				
+			case R.id.about:	
+                 AlertDialog.Builder b = new AlertDialog.Builder(this);
+                 b.setTitle("About");
+                 
+                 WebView about_view = new WebView(this);
+                 about_view.loadUrl("file:///android_asset/about.htm");
+                 
+                // b.setMessage(Html.fromHtml(getResources().getString(R.string.about_string)));
+                 b.setView(about_view);
+                 b.setPositiveButton("OK", null);
+                 b.create().show();
+				return true;
+
+			default:
+		    	return super.onOptionsItemSelected(item);
+			}
 	    }
 	}
 
