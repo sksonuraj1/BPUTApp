@@ -1,5 +1,23 @@
 package com.paulshantanu.bputapp;
 
+
+/*
+ * This class represents a common XML downloader and parser class that is used to parse both the 
+ * data to be displayed in the MainActivity as well as NoticeActivity activities.
+ * 
+ * The constructor takes three arguments:
+ * 1. An instance of the calling activity to know which activity to return the result to.
+ * 2. An instance of SaxParserHandler that is the handler for parsing the XML files.
+ * 3. A URL for the notice to be displayed in the NoticeActivity. This value must be "null" when called 
+ * from MainActivity.
+ * 
+ * The interface AsyncTaskListener must be implemented by the calling Activity. This interface has a 
+ * callback method onTaskComplete(String result) that is automatically called when the parsing is done. 
+ * All the code that has to take place after the parsing is done is written in its body in the given 
+ * activity.
+ * If parsing is successful, String result is returned as "OK" else "Error" is returned.  
+ */
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -43,6 +61,7 @@ public class XMLParser extends AsyncTask<String, Integer, String> {
 		nameValuePairs.add(new BasicNameValuePair("url", url)); 
 	}
 
+	
 	@Override
 	protected String doInBackground(String... sURL) {
 		String url = sURL[0];
@@ -94,11 +113,13 @@ public class XMLParser extends AsyncTask<String, Integer, String> {
 	protected void onPostExecute(String result) {
 		super.onPostExecute(result);
 		
+		
 		if(context.getClass() == MainActivity.class){
-		handler.getNotice().getNotice_head().remove(handler.getNotice().getNotice_head().size()-1);
-		handler.getNotice().getNotice_head().remove(handler.getNotice().getNotice_head().size()-1);
+//		handler.getNotice().getNotice_head().remove(handler.getNotice().getNotice_head().size()-1);
+//		handler.getNotice().getNotice_head().remove(handler.getNotice().getNotice_head().size()-1);
 		}
 		callback.onTaskComplete(result);
+		
 	}
 	
 }

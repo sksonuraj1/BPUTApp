@@ -1,5 +1,9 @@
 package com.paulshantanu.bputapp;
 
+/* 
+ * This class implements the basic SAX XML Parser to handle the XML parsing of the notices.
+ */
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;

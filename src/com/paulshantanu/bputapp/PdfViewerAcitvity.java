@@ -1,6 +1,11 @@
 package com.paulshantanu.bputapp;
 
-
+/*
+ * This activity downloads and displays those notices which are in PDF format. 
+ * This activity uses PDF.js javascript library to display the PDF inside a WebView "webView".
+ * 
+ * PDF.js is licensed under the APACHE-V2 License. Copyright Mozilla Foundation, all rights reserved.
+ */
 
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +31,7 @@ import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.Toast;
+import android.webkit.WebViewClient;
 
 @SuppressLint("NewApi")
 public class PdfViewerAcitvity extends Activity {
@@ -46,17 +51,20 @@ public class PdfViewerAcitvity extends Activity {
 		String link = getIntent().getExtras().getString("link");
 		Log.i("debug", "pdfintent: "+link);
 		
+		url = URLDecoder.getDecodedUrl(link);
+		
+		
 		//check & convert relative urls to abosulte
-				if (link.substring(0, 4).equals("http")){
-						url = link;
-				}
-				else{
-					str.append("http://www.bput.ac.in/");
-				    str.append(link); 
-					url = str.toString();
-				}
+//				if (link.substring(0, 4).equals("http")){
+//						url = link;
+//				}
+//				else{
+//					str.append("http://www.bput.ac.in/");
+//				    str.append(link); 
+//					url = str.toString();
+//				}
 				
-	    url = url.replaceAll(" ", "%20"); //Replace spaces with "%20" in the URL
+	    //url = url.replaceAll(" ", "%20"); //Replace spaces with "%20" in the URL
 		
 	    progressBar = ButteryProgressBar.getInstance(PdfViewerAcitvity.this);
         progressBar.setVisibility(View.VISIBLE);
@@ -73,7 +81,7 @@ public class PdfViewerAcitvity extends Activity {
 		settings.setBuiltInZoomControls(true);
 		webView.setWebChromeClient(new WebChromeClient());
 	
-	    new DownloadTask(PdfViewerAcitvity.this).execute("http://pauldmps.url.ph/test.pdf");
+	    new DownloadTask(PdfViewerAcitvity.this).execute(url);
 	}
 
 		
@@ -156,16 +164,27 @@ public class PdfViewerAcitvity extends Activity {
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
 			mWakeLock.release();
-			if (result != null)
-	            Toast.makeText(context,"Download error: "+result, Toast.LENGTH_LONG).show();
-	        else
-	            Toast.makeText(context,"File downloaded", Toast.LENGTH_SHORT).show();
+//			if (result != null)
+//	            Toast.makeText(context,"Download error: "+result, Toast.LENGTH_LONG).show();
+//	        else
+//	            Toast.makeText(context,"File downloaded", Toast.LENGTH_SHORT).show();
 			
 			path = Uri.parse(context.getFilesDir().toString()+ "/notice.pdf");
 	        webView.loadUrl("file:///android_asset/pdfviewer/index.html?file=" + path);
-	        webView.setVisibility(View.VISIBLE);
-			progressBar.setVisibility(View.INVISIBLE);
-			getActionBar().setSubtitle("View Notice");		
+	        webView.setWebViewClient(new WebViewClient()
+	        {
+	        	@Override
+	        	public void onPageFinished(WebView view, String url) {
+	        		super.onPageFinished(view, url);
+	        	
+	        		 webView.setVisibility(View.VISIBLE);
+	     			progressBar.setVisibility(View.INVISIBLE);
+	     			getActionBar().setSubtitle("View Notice");		
+	        		
+	        	}
+	        	
+	        });
+	       
 		}
 	}
 	

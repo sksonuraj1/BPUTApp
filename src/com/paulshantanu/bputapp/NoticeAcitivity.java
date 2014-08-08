@@ -1,5 +1,16 @@
 package com.paulshantanu.bputapp;
 
+/*
+ * This activity display those notices that are in HTML format. The notice is displayed in a textview
+ * "main_tv". The HTML body of the notice is downloaded and parsed using XMLParser.java with
+ *  the help of SaxParserHandler.java handler class.
+ *  
+ *  The tablelayout is used to display the table present in the notice.
+ *  
+ *  TODO: UI Enhancements, Code Optimizations
+*/
+
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.Bundle;
@@ -38,15 +49,17 @@ public class NoticeAcitivity extends Activity implements AsyncTaskListener{
 
 		String link = getIntent().getExtras().getString("link").trim();
 		
-		//check & convert relative urls to abosulte
-		if (link.substring(0, 4).equals("http")){
-			url = link;			
-		}
-		else{
-			str.append("http://www.bput.ac.in/");
-		    str.append(link);
-		    url = str.toString();
-		}
+		url = URLDecoder.getDecodedUrl(link);
+		
+//		//check & convert relative urls to abosulte
+//		if (link.substring(0, 4).equals("http")){
+//			url = link;			
+//		}
+//		else{
+//			str.append("http://www.bput.ac.in/");
+//		    str.append(link);
+//		    url = str.toString();
+//		}
 
 		new XMLParser(this, notice_handler,url).execute("http://pauldmps.url.ph/notice.php");
 	}

@@ -1,16 +1,24 @@
 package com.paulshantanu.bputapp;
 
+/*
+ * This class provides the basic data structure to store the various parts of the notice.
+ * Each notice is associated with a unique object of this class.
+ */
+
 import java.util.ArrayList;
 
 public class Notice {
 	
-	ArrayList<String> url = new ArrayList<String>();
-    ArrayList<String> notice_head = new ArrayList<String>();
-    ArrayList<String> table_head = new ArrayList<String>();
-    ArrayList<String> table_body = new ArrayList<String>();
-	StringBuffer notice_body = new StringBuffer();
-	Boolean has_table = false;
+    private ArrayList<String> url = new ArrayList<String>();
+    private ArrayList<String> notice_head = new ArrayList<String>();
+    private ArrayList<String> table_head = new ArrayList<String>();
+    private ArrayList<String> table_body = new ArrayList<String>();
+    private StringBuffer notice_body = new StringBuffer();
+    private Boolean has_table = false;
 	
+    
+    //Getters and setters
+    
 	public ArrayList<String> getUrl() {
 		return url;
 	}

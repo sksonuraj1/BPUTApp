@@ -1,8 +1,21 @@
 package com.paulshantanu.bputapp;
 
+/*
+ * This class is the main entry point of the app. It is the first activity that is shown when the
+ * user opens the app. 
+ * This activity implements SwipeRefreshHintLayout.java for "Swipe down to refresh" gesture.
+ * This activity also implements ButteryProgressBar.java for showing the indeterminate progressbar while
+ * loading the required data.
+ * 
+ * This activity shows a listview with all the notices that are downloaded and parsed using 
+ * XMLParser.java with the help of SaxParserHandler.java handler class.
+ * 
+ * TODO: UI Enhancements, Code Optimizations
+ * 
+*/
+
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,7 +23,6 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
-import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,25 +49,28 @@ public class MainActivity extends Activity implements OnRefreshListener,AsyncTas
 		progressBar = ButteryProgressBar.getInstance(MainActivity.this);
 		getActionBar().setIcon(getResources().getDrawable(R.drawable.ic_launcher));    
 		
-		checkConnectivity();
 	
 		mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swipe_container);
  	    mSwipeRefreshHintLayout = (SwipeRefreshHintLayout)findViewById(R.id.swipe_hint);
  	    mSwipeRefreshHintLayout.setSwipeLayoutTarget(mSwipeRefreshLayout);
  	    mSwipeRefreshLayout.setOnRefreshListener(this);
  	    mSwipeRefreshLayout.setColorScheme(R.color.theme_red,android.R.color.transparent,android.R.color.transparent,android.R.color.transparent);
-        onRefresh();
+		checkConnectivity();
+
+ 	    //onRefresh();
     }
 
 	@Override
 	public void onRefresh() {
         progressBar.setVisibility(View.VISIBLE);
 		mSwipeRefreshLayout.setRefreshing(true);
+		mSwipeRefreshLayout.setEnabled(false);
  	    mSwipeRefreshLayout.setColorScheme(R.color.transparent,R.color.transparent,R.color.transparent,R.color.transparent);
-		getActionBar().setTitle("Refreshing...");
+		getActionBar().setSubtitle("Loading...");
 		handler = new SaxParserHandler();
-
-		new XMLParser(this, handler,null).execute("http://pauldmps.url.ph/default.php");
+			
+        new XMLParser(this, handler, null).execute("http://pauldmps.url.ph/default.php");
+		
 	}
 	
 	public void checkConnectivity() {	
@@ -80,11 +95,19 @@ public class MainActivity extends Activity implements OnRefreshListener,AsyncTas
 		});
     	b.create().show();
           }
+	    else{
+	    	onRefresh();
+	    }
 	}
 	
 	    @Override
 		public void onTaskComplete(String result) {
+	    	
+	    	mSwipeRefreshLayout.setEnabled(true);
 	    	if(result.equals("OK")){
+	   		handler.getNotice().getNotice_head().remove(handler.getNotice().getNotice_head().size()-1);
+	  		handler.getNotice().getNotice_head().remove(handler.getNotice().getNotice_head().size()-1);
+	    	
 			 ArrayAdapter<String> adp =new ArrayAdapter<String>(MainActivity.this, 
 					 android.R.layout.simple_list_item_1,
 					 handler.getNotice().getNotice_head().toArray(new String[handler.getNotice().getNotice_head().size()]));
@@ -95,25 +118,27 @@ public class MainActivity extends Activity implements OnRefreshListener,AsyncTas
 					public void onItemClick(AdapterView<?> arg0, View arg1, int itemClicked,
 							long arg3) {
 						String link = handler.getNotice().getUrl().get(itemClicked).trim();
-						Log.i("debug",Boolean.toString(link.endsWith("pdf")));
-						if(link.endsWith("pdf")){ //If the notice is PDF, start PDF opening activity.
-							Log.i("debug", "PDF link found");
+						if(URLDecoder.getUrlType(link)==URLDecoder.PDFFILE){ //If the notice is PDF, start PDF opening activity.
 							Intent pdfintent = new Intent(MainActivity.this,PdfViewerAcitvity.class);
 							pdfintent.putExtra("link", link);
 							startActivity(pdfintent);
 						}
-						else //else parse the html notice
+						else if (URLDecoder.getUrlType(link)==URLDecoder.HTMLFILE)
 						{
 						 Intent i_notice = new Intent(MainActivity.this,NoticeAcitivity.class);
 		                 i_notice.putExtra("link", link);
 		                 startActivity(i_notice);
+						}
+						else
+						{
+							Log.i("debug", "Unknown file type found");
 						}
 					}
 				});
    			    mSwipeRefreshLayout.setRefreshing(false);
                 progressBar.setVisibility(View.INVISIBLE);
          	    mSwipeRefreshLayout.setColorScheme(R.color.theme_red,R.color.transparent,R.color.transparent,R.color.transparent);
-		        getActionBar().setTitle("BPUT App");
+		        getActionBar().setSubtitle(null);
 	    	}
 	    }
 	    
@@ -140,7 +165,6 @@ public class MainActivity extends Activity implements OnRefreshListener,AsyncTas
                  WebView about_view = new WebView(this);
                  about_view.loadUrl("file:///android_asset/about.htm");
                  
-                // b.setMessage(Html.fromHtml(getResources().getString(R.string.about_string)));
                  b.setView(about_view);
                  b.setPositiveButton("OK", null);
                  b.create().show();
