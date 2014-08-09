@@ -1,6 +1,5 @@
 package com.paulshantanu.bputapp;
 
-
 /*
  * This class is used to decode the url of the notice to correct format to fetch the data..
  * Notices of the BPUT website may have the following types of URLs:
@@ -13,17 +12,15 @@ package com.paulshantanu.bputapp;
  * 
  * This class also identifies whether the file is a HTML file or a PDF file based on its extension so that 
  * the result can be used to display proper activity to handle the filetype.
- * 
 */
+
 public class URLDecoder {
 
 	private static StringBuilder url;
 	public static final int INVALIDFILE = -1;
 	public static final int HTMLFILE =0;
 	public static final int PDFFILE =1;
-	
-	//public enum URLDecoder{HTMLFILE, INVALIDFILE, PDFFILE;}
-	
+		
 	public static String getDecodedUrl(String inputUrl){
 		
 		url =  new StringBuilder();

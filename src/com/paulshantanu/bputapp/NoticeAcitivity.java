@@ -51,15 +51,6 @@ public class NoticeAcitivity extends Activity implements AsyncTaskListener{
 		
 		url = URLDecoder.getDecodedUrl(link);
 		
-//		//check & convert relative urls to abosulte
-//		if (link.substring(0, 4).equals("http")){
-//			url = link;			
-//		}
-//		else{
-//			str.append("http://www.bput.ac.in/");
-//		    str.append(link);
-//		    url = str.toString();
-//		}
 
 		new XMLParser(this, notice_handler,url).execute("http://pauldmps.url.ph/notice.php");
 	}

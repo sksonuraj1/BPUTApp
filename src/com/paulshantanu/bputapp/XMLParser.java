@@ -115,8 +115,6 @@ public class XMLParser extends AsyncTask<String, Integer, String> {
 		
 		
 		if(context.getClass() == MainActivity.class){
-//		handler.getNotice().getNotice_head().remove(handler.getNotice().getNotice_head().size()-1);
-//		handler.getNotice().getNotice_head().remove(handler.getNotice().getNotice_head().size()-1);
 		}
 		callback.onTaskComplete(result);
 		

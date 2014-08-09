@@ -53,19 +53,6 @@ public class PdfViewerAcitvity extends Activity {
 		
 		url = URLDecoder.getDecodedUrl(link);
 		
-		
-		//check & convert relative urls to abosulte
-//				if (link.substring(0, 4).equals("http")){
-//						url = link;
-//				}
-//				else{
-//					str.append("http://www.bput.ac.in/");
-//				    str.append(link); 
-//					url = str.toString();
-//				}
-				
-	    //url = url.replaceAll(" ", "%20"); //Replace spaces with "%20" in the URL
-		
 	    progressBar = ButteryProgressBar.getInstance(PdfViewerAcitvity.this);
         progressBar.setVisibility(View.VISIBLE);
 		
@@ -192,7 +179,7 @@ public class PdfViewerAcitvity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		webView.loadUrl( "javascript:window.location.reload( true )" );
+	//	webView.loadUrl( "javascript:window.location.reload( true )" );
 	}
 	
 	@Override
